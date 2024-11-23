@@ -19,7 +19,7 @@ Clone the Repository:
 
 bash
 Copy code
-git clone [https://github.com/your-username/WiseTrade.git  ](https://github.com/artham-bhardwaj/Wise-Trade.git)
+git clone [https://github.com/artham-bhardwaj/Wise-Trade.git  ](https://github.com/artham-bhardwaj/Wise-Trade.git)
 
 cd WiseTrade  
 Install Dependencies:
