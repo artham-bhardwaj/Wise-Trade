@@ -1,13 +1,13 @@
-#WiseTrade: AI-Enhanced Market Analysis Platform
+# WiseTrade: AI-Enhanced Market Analysis Platform
 WiseTrade is an AI-driven platform that provides real-time market insights, sentiment analysis, and predictive analytics, leveraging MySQL and SQL for efficient data management.
 
-#Features
+# Features
 Real-Time News Sentiment Analysis: Aggregates and analyzes news to gauge market sentiment.
 Market Trend Predictions: Forecasts trends and price movements using advanced models.
 Personalized Recommendations: Provides customized investment suggestions based on user preferences.
 Interactive Visualizations: Offers intuitive charts for easy data interpretation.
 Comprehensive Data Aggregation: Integrates multiple data sources for accurate insights.
-#Tech Stack
+# Tech Stack
 Languages: Python, SQL
 Frameworks: Flask/Streamlit, TensorFlow/Keras, Scikit-learn
 Libraries: Pandas, NumPy, NLTK, VADER, Matplotlib, Seaborn, Plotly
@@ -19,16 +19,17 @@ Clone the Repository:
 
 bash
 Copy code
-git clone https://github.com/your-username/WiseTrade.git  
+git clone [https://github.com/your-username/WiseTrade.git  ](https://github.com/artham-bhardwaj/Wise-Trade.git)
+
 cd WiseTrade  
 Install Dependencies:
 
-##bash
+## bash
 Copy code
 pip install -r requirements.txt  
 Set Up MySQL Database:
 
-##Install MySQL Server.
+## Install MySQL Server.
 Create a database:
 sql
 Copy code
@@ -48,12 +49,12 @@ DB_PASSWORD=your_password
 DB_NAME=wisetrade_db  
 Run the Application:
 
-##bash
+## bash
 Copy code
 python app.py  
 Access the app in your browser at http://localhost:5000.
 
-##Folder Structure
+## Folder Structure
 graphql
 Copy code
 WiseTrade/  
@@ -66,7 +67,7 @@ WiseTrade/
 ├── app.py                 # Main application file  
 ├── requirements.txt       # Python dependencies  
 └── README.md              # Project documentation  
-##Contributing
+## Contributing
 Fork the repository.
 Create a feature branch (git checkout -b feature-name).
 Commit your changes (git commit -m "Add feature-name").
