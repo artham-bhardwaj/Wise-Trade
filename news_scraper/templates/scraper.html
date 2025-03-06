@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Scraper</title>
+</head>
+<body>
+    <h2>News Scraper</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="topic">Enter Topic:</label>
+        <input type="text" name="topic" id="topic" placeholder="Enter a topic..." required>
+        <button type="submit">Fetch News</button>
+    </form>
+
+    <br><br>
+
+    <textarea rows="10" cols="50" readonly>
+        {{ news }}
+    </textarea>
+</body>
+</html>
