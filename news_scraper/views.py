@@ -32,4 +32,13 @@ def newsscraper(request):
                 else:
                     news_summary = "No relevant news found."
 
+#      STRUCTURE OF SINGLE ARTICLE:
+#       { 
+#         "source": {"name": "The Verge"},
+#         "title": "Cryptocurrency market sees massive surge",
+#         "description": "The crypto market is booming...",
+#         "url": "https://www.theverge.com/...",
+#         "publishedAt": "2025-03-01T11:30:00Z"
+#     }
+
     return render(request, "scraper.html", {"news": news_summary})
