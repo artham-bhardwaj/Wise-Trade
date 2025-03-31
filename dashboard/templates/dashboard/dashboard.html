@@ -1,0 +1,43 @@
+<!-- templates/dashboard/dashboard.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+</head>
+<body class="bg-gray-100">
+
+<div class="container mx-auto p-4">
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'dashboard_view' %}" class="mb-4">
+        <input 
+            type="text" 
+            name="query" 
+            value="{{ query }}" 
+            placeholder="Search for news or stock analysis..." 
+            class="p-2 w-full border border-gray-300 rounded-lg"
+        >
+        <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Search</button>
+    </form>
+
+    <!-- Displaying News Articles and Sentiment -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        {% for news, sentiment in news_data|zip_longest:sentiment_data %}
+            <div class="p-4 bg-white shadow rounded-lg">
+                <h2 class="text-xl font-bold mb-2">{{ news.title }}</h2>
+                <p>{{ news.content }}</p>
+                <p class="mt-2"><strong>Sentiment:</strong> {{ sentiment.sentiment }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Displaying Technical Analysis Data -->
+    <div class="p-4 bg-white shadow rounded-lg">
+        <h2 class="text-xl font-bold mb-4">Technical Analysis Results</h2>
+        <pre>{{ technical_data|safe }}</pre>
+    </div>
+</div>
+
+</body>
+</html>
