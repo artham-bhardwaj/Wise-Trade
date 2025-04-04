@@ -1,0 +1,32 @@
+<!-- sentiment_analysis/templates/sentiment_analysis/analyze.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Analysis</title>
+</head>
+<body>
+    <h1>Sentiment Analysis</h1>
+    <form id="analyzeForm" method="POST" action="{% url 'sentiment_analysis:analyze' %}">
+        {% csrf_token %}
+        <textarea name="text" rows="4" cols="50"></textarea><br><br>
+        <button type="submit">Analyze</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('analyzeForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            const response = await fetch("{% url 'sentiment_analysis:analyze' %}", {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            document.getElementById('result').innerHTML = `Sentiment: ${data.sentiment} <br> Confidence: ${data.confidence}`;
+        };
+    </script>
+</body>
+</html>
