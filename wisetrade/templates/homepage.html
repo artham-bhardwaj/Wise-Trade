@@ -3,9 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>WiseTrade - Smart Trading Platform</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Styles now handled in external CSS -->
 </head>
 <body>
-    hello brother
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-chart-line me-2"></i>WiseTrade
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+                <div class="ms-3">
+                    <a href="/dashboard" class="btn btn-primary">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-4">Smart Trading Decisions Made Simple</h1>
+            <p class="lead mb-5">Advanced analytics, real-time data, and AI-powered insights to elevate your trading strategy</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/dashboard" class="btn btn-light btn-lg px-4">Explore Dashboard</a>
+                <a href="#" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Powerful Features</h2>
+                <p class="text-muted">Everything you need for successful trading</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="card-body text-center">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3 mx-auto" style="width: 60px; height: 60px;">
+                                <i class="fas fa-chart-pie fs-4"></i>
+                            </div>
+                            <h5 class="card-title">Technical Analysis</h5>
+                            <p class="card-text">Advanced charting tools and indicators to analyze market trends.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="card-body text-center">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3 mx-auto" style="width: 60px; height: 60px;">
+                                <i class="fas fa-brain fs-4"></i>
+                            </div>
+                            <h5 class="card-title">Sentiment Analysis</h5>
+                            <p class="card-text">AI-powered sentiment analysis of news and social media.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="card-body text-center">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3 mx-auto" style="width: 60px; height: 60px;">
+                                <i class="fas fa-newspaper fs-4"></i>
+                            </div>
+                            <h5 class="card-title">News Aggregation</h5>
+                            <p class="card-text">Real-time financial news from trusted sources.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="text-white mb-4">
+                        <i class="fas fa-chart-line me-2"></i>WiseTrade
+                    </h5>
+                    <p class="text-muted">Making trading smarter with advanced analytics and AI insights.</p>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5 class="text-white mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted">Home</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Dashboard</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Features</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5 class="text-white mb-4">Features</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted">Technical Analysis</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Sentiment Analysis</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">News Aggregation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="text-white mb-4">Connect With Us</h5>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="#" class="text-muted"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-muted"><i class="fab fa-linkedin fa-lg"></i></a>
+                        <a href="#" class="text-muted"><i class="fab fa-github fa-lg"></i></a>
+                        <a href="#" class="text-muted"><i class="fab fa-discord fa-lg"></i></a>
+                    </div>
+                    <p class="text-muted mb-0">© 2023 WiseTrade. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,116 +1,404 @@
-<!-- templates/dashboard/dashboard.html -->
-
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Interactive Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiseTrade Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Plotly -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
-
-<div class="container mx-auto p-4">
-    <!-- Search Bar -->
-    <form method="GET" action="{% url 'dashboard_view' %}" class="mb-4">
-        {% csrf_token %}
-        <input 
-            type="text" 
-            name="query" 
-            value="{{ query }}" 
-            placeholder="Search for news or stock analysis..." 
-            class="p-2 w-full border border-gray-300 rounded-lg"
-        >
-        <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-            Search
-        </button>
-    </form>
-
-    <!-- Error Display -->
-    {% if errors %}
-    <div class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
-        <h3 class="font-bold">Errors occurred:</h3>
-        <ul class="list-disc pl-5">
-            {% for error in errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-
-    <!-- News and Analysis Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-        {% for news, sentiment in zipped_data %}
-        <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition">
-            <h3 class="text-lg font-semibold mb-2">{{ news.title }}</h3>
-            <div class="mb-2">
-                <span class="font-medium">Sentiment:</span>
-                <span class="{% if sentiment.sentiment == 'Positive' %}text-green-600{% elif sentiment.sentiment == 'Negative' %}text-red-600{% else %}text-gray-600{% endif %}">
-                    {{ sentiment.sentiment }}
-                </span>
-            </div>
-            <div class="mt-2 p-2 bg-gray-50 rounded">
-                <h4 class="font-medium">Sentiment Analysis:</h4>
-                <p class="{% if sentiment.sentiment == 'Positive' %}text-green-600{% elif sentiment.sentiment == 'Negative' %}text-red-600{% endif %}">
-                    {{ sentiment.sentiment }}
-                </p>
-            </div>
+<body>
+    <!-- Dashboard Header -->
+    <header class="dashboard-header sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand fw-bold" href="#">
+                        <i class="fas fa-chart-line me-2"></i>WiseTrade
+                    </a>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3 text-muted d-none d-md-inline">Welcome back!</span>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
         </div>
-        {% empty %}
-        <div class="col-span-full text-center py-8 text-gray-500">
-            No data available for "{{ query }}"
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-container">
+        <div class="container">
+            <h1 class="text-white mb-4">Market Intelligence Dashboard</h1>
+            <form method="GET" action="{% url 'dashboard_view' %}" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-10">
+                    <input 
+                        type="text" 
+                        name="query" 
+                        value="{{ query }}" 
+                        placeholder="Search for stocks, news or analysis..." 
+                        class="form-control form-control-lg"
+                    >
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-light btn-lg w-100">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </form>
         </div>
-        {% endfor %}
-    </div>
+    </section>
 
-    <!-- Price Chart -->
-    <div class="p-4 bg-white shadow rounded-lg mb-4">
-        <h2 class="text-xl font-bold mb-4">Price Chart</h2>
-        <div id="priceChart" style="height: 500px;"></div>
-    </div>
-
-    <!-- Technical Analysis Summary -->
-    {% if technical_data %}
-    <div class="p-4 bg-white shadow rounded-lg">
-        <h2 class="text-xl font-bold mb-4">Technical Analysis Summary</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {% for key, value in technical_data.items %}
-            <div class="p-3 bg-gray-50 rounded">
-                <div class="font-medium">{{ key }}</div>
-                <div class="{% if value > 0 %}text-green-600{% elif value < 0 %}text-red-600{% endif %}">
-                    {{ value }}
+    <main class="container mb-5">
+        <!-- Price Ticker -->
+        <div class="price-ticker overflow-hidden">
+            <div class="marquee">
+                <div class="d-flex justify-content-around">
+                    <div class="ticker-item">AAPL <span class="ticker-price up">$172.63 <i class="fas fa-caret-up"></i></span></div>
+                    <div class="ticker-item">MSFT <span class="ticker-price up">$328.39 <i class="fas fa-caret-up"></i></span></div>
+                    <div class="ticker-item">GOOG <span class="ticker-price down">$151.21 <i class="fas fa-caret-down"></i></span></div>
+                    <div class="ticker-item">TSLA <span class="ticker-price up">$180.52 <i class="fas fa-caret-up"></i></span></div>
+                    <div class="ticker-item">AMZN <span class="ticker-price down">$178.75 <i class="fas fa-caret-down"></i></span></div>
                 </div>
             </div>
-            {% endfor %}
         </div>
-    </div>
-    {% endif %}
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Fetch price data when page loads
-    fetch(`/api/price_data?symbol=${encodeURIComponent('{{ query }}')}`)
-        .then(response => response.json())
-        .then(data => {
-            const candlestickData = [{
-                type: 'candlestick',
-                x: data.dates,
-                open: data.open,
-                high: data.high,
-                low: data.low,
-                close: data.close
-            }];
+        <!-- Watchlist -->
+        <section class="mb-5">
+            <h2 class="mb-4 d-flex align-items-center">
+                <i class="fas fa-star me-3"></i>Your Watchlist
+                <button class="btn btn-sm btn-outline-primary ms-auto" data-bs-toggle="modal" data-bs-target="#watchlistModal">
+                    Manage
+                </button>
+            </h2>
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3" id="watchlistContainer">
+                {% if watchlist %}
+                    {% for item in watchlist %}
+                    <div class="col">
+                        <div class="card watchlist-card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ item.symbol }}</h5>
+                                <div class="metric-value {% if item.change > 0 %}up{% else %}down{% endif %}">
+                                    ${{ item.price|floatformat:2 }} 
+                                    <i class="fas fa-caret-{% if item.change > 0 %}up{% else %}down{% endif %}"></i>
+                                </div>
+                                <div class="text-muted small">
+                                    {% if item.change > 0 %}+{% endif %}{{ item.change|floatformat:2 }}% today
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center py-3">
+                        <p class="text-muted">Your watchlist is empty</p>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#watchlistModal">
+                            Add Stocks
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
 
-            const layout = {
-                title: '{{ query }} Price Chart',
-                xaxis: { title: 'Date' },
-                yaxis: { title: 'Price' }
-            };
+        <!-- Watchlist Modal -->
+        <div class="modal fade" id="watchlistModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Manage Watchlist</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Search stocks..." id="watchlistSearch">
+                            <button class="btn btn-primary" type="button">Add</button>
+                        </div>
+                        <div class="list-group" id="watchlistStocks">
+                            {% for symbol in popular_stocks %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ symbol }}
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" 
+                                           id="watchlist-{{ symbol }}" 
+                                           {% if symbol in watchlist_symbols %}checked{% endif %}>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveWatchlist">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Error Display -->
+        {% if error_data %}
+        <div class="alert alert-danger mb-4">
+            <h4 class="alert-heading">{{ error_data.error }}</h4>
+            <p>{{ error_data.message }}</p>
+            <p>Try one of these popular stocks:</p>
+            <div class="d-flex flex-wrap gap-2">
+                {% for symbol in error_data.suggestions %}
+                <a href="?query={{ symbol }}" class="btn btn-sm btn-outline-primary">{{ symbol }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% elif errors %}
+        <div class="alert alert-danger mb-4">
+            <h4 class="alert-heading">Errors occurred:</h4>
+            <ul class="mb-0">
+                {% for error in errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
 
-            Plotly.newPlot('priceChart', candlestickData, layout);
-        })
-        .catch(error => console.error('Error loading chart data:', error));
-});
-</script>
+        <!-- News and Analysis Section -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="d-flex align-items-center mb-0">
+                    <i class="fas fa-newspaper me-3"></i>News & Sentiment Analysis
+                    <span class="badge bg-primary ms-3">{{ zipped_data|length }} results</span>
+                </h2>
+                <div class="filter-buttons">
+                    <button class="btn btn-sm btn-outline-primary active">All</button>
+                    <button class="btn btn-sm btn-outline-success">Positive</button>
+                    <button class="btn btn-sm btn-outline-danger">Negative</button>
+                    <button class="btn btn-sm btn-outline-secondary">Neutral</button>
+                </div>
+            </div>
+            
+            {% if zipped_data %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for news, sentiment in zipped_data %}
+                <div class="col">
+                    <div class="card news-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span class="sentiment-badge {% if sentiment.sentiment == 'Positive' %}positive{% elif sentiment.sentiment == 'Negative' %}negative{% else %}neutral{% endif %}">
+                                        {{ sentiment.sentiment }}
+                                    </span>
+                                    <div class="sentiment-gauge mt-2">
+                                        <div class="sentiment-fill {% if sentiment.sentiment == 'Positive' %}positive{% elif sentiment.sentiment == 'Negative' %}negative{% else %}neutral{% endif %}" 
+                                             data-confidence="{{ sentiment.confidence }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <small class="text-muted">{{ news.published_at|date:"M d, Y" }}</small>
+                            </div>
+                            <h5 class="card-title">{{ news.title }}</h5>
+                            <p class="card-text text-muted mb-3">{{ news.description|truncatewords:20 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ news.source }}</small>
+                                <a href="{{ news.0.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5 bg-white rounded">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No data available for "{{ query }}"</h4>
+                <p class="text-muted">Try searching for a different stock or news topic</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Price Chart Section -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0 d-flex align-items-center">
+                    <i class="fas fa-chart-line me-3"></i>Price Chart
+                </h2>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary">1D</button>
+                    <button type="button" class="btn btn-outline-secondary">1W</button>
+                    <button type="button" class="btn btn-outline-secondary active">1M</button>
+                    <button type="button" class="btn btn-outline-secondary">3M</button>
+                    <button type="button" class="btn btn-outline-secondary">1Y</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div id="priceChart" style="height: 500px;"></div>
+            </div>
+        </section>
+
+    <!-- Recommendation Section -->
+    <section class="mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title d-flex align-items-center">
+                    <i class="fas fa-chart-pie me-3"></i>Investment Recommendation
+                </h2>
+                <div class="alert {% if recommendation == 'Buy' %}alert-success{% elif recommendation == 'Sell' %}alert-danger{% else %}alert-warning{% endif %}">
+                    <h4 class="alert-heading">
+                        {% if recommendation == 'Buy' %}
+                            <i class="fas fa-thumbs-up me-2"></i>Strong Buy Recommendation
+                        {% elif recommendation == 'Sell' %}
+                            <i class="fas fa-thumbs-down me-2"></i>Sell Recommendation
+                        {% else %}
+                            <i class="fas fa-info-circle me-2"></i>Hold Recommendation
+                        {% endif %}
+                    </h4>
+                    <p>For stock: <strong>{{ query }}</strong></p>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="mb-1">Current Price: ${{ recommendation_details.close_price|floatformat:2 }}</p>
+                            <p class="mb-1">50-Day SMA: ${{ recommendation_details.sma_50|floatformat:2 }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1">RSI: {{ recommendation_details.rsi|floatformat:2 }}</p>
+                            <p class="mb-1">Sentiment Score: {{ sentiment_score|floatformat:2 }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1">Analysis:</p>
+                            <ul>
+                                {% if recommendation_details.close_price > recommendation_details.sma_50 %}
+                                    <li>Price above 50-day average</li>
+                                {% else %}
+                                    <li>Price below 50-day average</li>
+                                {% endif %}
+                                {% if recommendation_details.rsi > 70 %}
+                                    <li>Potentially overbought (RSI > 70)</li>
+                                {% elif recommendation_details.rsi < 30 %}
+                                    <li>Potentially oversold (RSI < 30)</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Analysis Section -->
+    {% if technical_data %}
+    <section>
+            <h2 class="mb-4 d-flex align-items-center">
+                <i class="fas fa-chart-bar me-3"></i>Technical Indicators
+            </h2>
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+            {% if technical_data %}
+                {% for indicator in technical_data %}
+                <div class="col">
+                    <div class="metric-card">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">{{ indicator.name }}</span>
+                            <i class="fas fa-info-circle text-muted" title="{{ indicator.description }}"></i>
+                        </div>
+                        <div class="metric-value {% if indicator.value > 0 %}text-success{% elif indicator.value < 0 %}text-danger{% endif %}">
+                            {{ indicator.value|floatformat:2 }}
+                            {% if indicator.trend == 'up' %}
+                                <i class="fas fa-arrow-up text-success ms-1"></i>
+                            {% elif indicator.trend == 'down' %}
+                                <i class="fas fa-arrow-down text-danger ms-1"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Price chart initialization
+        if (document.getElementById('priceChart')) {
+            fetch(`/api/price_data?symbol=${encodeURIComponent('{{ query }}')}`)
+                .then(response => response.json())
+                .then(data => {
+                    const candlestickData = [{
+                        type: 'candlestick',
+                        x: data.dates,
+                        open: data.open,
+                        high: data.high,
+                        low: data.low,
+                        close: data.close,
+                        increasing: {line: {color: 'green'}},
+                        decreasing: {line: {color: 'red'}}
+                    }];
+
+                    const layout = {
+                        title: '{{ query }} Price Chart',
+                        xaxis: { 
+                            title: 'Date',
+                            rangeslider: { visible: false }
+                        },
+                        yaxis: { title: 'Price' },
+                        margin: {l: 50, r: 50, b: 50, t: 50, pad: 4},
+                        showlegend: false,
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        paper_bgcolor: 'rgba(0,0,0,0)'
+                    };
+
+                    const config = {
+                        responsive: true,
+                        displayModeBar: true
+                    };
+
+                    Plotly.newPlot('priceChart', candlestickData, layout, config);
+                })
+                .catch(error => console.error('Error loading chart data:', error));
+        }
+
+        // Initialize sentiment bars
+        document.querySelectorAll('.sentiment-fill').forEach(bar => {
+            const confidence = bar.dataset.confidence;
+            setTimeout(() => {
+                bar.style.width = `${confidence}%`;
+            }, 100);
+        });
+
+        // Add click handlers for sentiment filters
+        document.querySelectorAll('.filter-buttons .btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-buttons .btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.textContent.trim();
+                document.querySelectorAll('.news-card').forEach(card => {
+                    const sentiment = card.querySelector('.sentiment-badge').textContent.trim();
+                    if (filter === 'All' || sentiment === filter) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+    </script>
 </body>
 </html>
