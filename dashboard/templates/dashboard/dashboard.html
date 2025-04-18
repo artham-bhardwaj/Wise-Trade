@@ -1,52 +1,3 @@
-<<<<<<< HEAD
- <!-- templates/dashboard/dashboard.html -->
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Interactive Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
-</head>
-<body class="bg-gray-100">
-
-<div class="container mx-auto p-4">
-    <!-- Search Bar -->
-    <form method="GET" action="{% url 'dashboard' %}" class="mb-4">
-        <input 
-            type="text" 
-            name="stock_name" 
-            value="{{ stock_name|default:'TSLA' }}" 
-            placeholder="Enter stock name or symbol (e.g. 'Apple stock' or 'AAPL')" 
-            class="p-2 w-full border border-gray-300 rounded-lg"
-            required
-        >
-        <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Search</button>
-    </form>
-
-    <!-- Displaying News Articles and Sentiment -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        {% for news, sentiment in combined_news %}
-            <div class="p-4 bg-white shadow rounded-lg">
-                <h2 class="text-xl font-bold mb-2">{{ news.title }}</h2>
-                <p>{{ news.content }}</p>
-                {% if sentiment %}
-                    <p class="mt-2"><strong>Sentiment:</strong> {{ sentiment.sentiment }}</p>
-                    {% if sentiment.symbols %}
-                        <p class="mt-1"><strong>Related Stocks:</strong> {{ sentiment.symbols|join:", " }}</p>
-                    {% endif %}
-                {% endif %}
-            </div>
-        {% endfor %}
-    </div>
-
-    <!-- Displaying Technical Analysis Data -->
-    <div class="p-4 bg-white shadow rounded-lg">
-        <h2 class="text-xl font-bold mb-4">Technical Analysis Results</h2>
-        <pre>{{ technical_data|safe }}</pre>
-    </div>
-</div>
-
-=======
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -100,13 +51,13 @@
             <form method="GET" action="{% url 'dashboard_view' %}" class="row g-3">
                 {% csrf_token %}
                 <div class="col-md-10">
-                    <input 
-                        type="text" 
-                        name="query" 
-                        value="{{ query }}" 
-                        placeholder="Search for stocks, news or analysis..." 
-                        class="form-control form-control-lg"
-                    >
+<input 
+    type="text" 
+    name="stock_name" 
+    value="{{ stock_name|default:'TSLA' }}" 
+    placeholder="Search for stocks, news or analysis..." 
+    class="form-control form-control-lg"
+>
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-light btn-lg w-100">
@@ -177,10 +128,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Search stocks..." id="watchlistSearch">
-                            <button class="btn btn-primary" type="button">Add</button>
-                        </div>
                         <div class="list-group" id="watchlistStocks">
                             {% for symbol in popular_stocks %}
                             <div class="list-group-item d-flex justify-content-between align-items-center">
@@ -226,56 +173,7 @@
 
         <!-- News and Analysis Section -->
         <section class="mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="d-flex align-items-center mb-0">
-                    <i class="fas fa-newspaper me-3"></i>News & Sentiment Analysis
-                    <span class="badge bg-primary ms-3">{{ zipped_data|length }} results</span>
-                </h2>
-                <div class="filter-buttons">
-                    <button class="btn btn-sm btn-outline-primary active">All</button>
-                    <button class="btn btn-sm btn-outline-success">Positive</button>
-                    <button class="btn btn-sm btn-outline-danger">Negative</button>
-                    <button class="btn btn-sm btn-outline-secondary">Neutral</button>
-                </div>
-            </div>
-            
-            {% if zipped_data %}
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                {% for news, sentiment in zipped_data %}
-                <div class="col">
-                    <div class="card news-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <span class="sentiment-badge {% if sentiment.sentiment == 'Positive' %}positive{% elif sentiment.sentiment == 'Negative' %}negative{% else %}neutral{% endif %}">
-                                        {{ sentiment.sentiment }}
-                                    </span>
-                                    <div class="sentiment-gauge mt-2">
-                                        <div class="sentiment-fill {% if sentiment.sentiment == 'Positive' %}positive{% elif sentiment.sentiment == 'Negative' %}negative{% else %}neutral{% endif %}" 
-                                             data-confidence="{{ sentiment.confidence }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <small class="text-muted">{{ news.published_at|date:"M d, Y" }}</small>
-                            </div>
-                            <h5 class="card-title">{{ news.title }}</h5>
-                            <p class="card-text text-muted mb-3">{{ news.description|truncatewords:20 }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">{{ news.source }}</small>
-                                <a href="{{ news.0.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="text-center py-5 bg-white rounded">
-                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                <h4 class="text-muted">No data available for "{{ query }}"</h4>
-                <p class="text-muted">Try searching for a different stock or news topic</p>
-            </div>
-            {% endif %}
+            {% include 'dashboard/news_table.html' %}
         </section>
 
         <!-- Price Chart Section -->
@@ -449,6 +347,5 @@
         });
     });
     </script>
->>>>>>> 83a97cbb0df2e8e6be15a026c1e5c13abcd467c0
 </body>
 </html>

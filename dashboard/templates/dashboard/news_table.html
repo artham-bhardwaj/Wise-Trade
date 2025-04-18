@@ -1,0 +1,24 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Headline</th>
+            <th>Source</th>
+            <th>Sentiment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for news, sentiment in combined_news %}
+        <tr>
+            <td><a href="{{ news.url }}" target="_blank">{{ news.title }}</a></td>
+            <td>{{ news.source }}</td>
+            <td>
+                {% if sentiment %}
+                    {{ sentiment.sentiment|title }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

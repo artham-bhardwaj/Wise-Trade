@@ -4,9 +4,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-<<<<<<< HEAD
     path('', views.dashboard_view, name='dashboard'),
-=======
-    path('', views.dashboard_view, name='dashboard_view'),
->>>>>>> 83a97cbb0df2e8e6be15a026c1e5c13abcd467c0
+    path('dashboard_view/', views.dashboard_view, name='dashboard_view'),
+    path('api/price_data', views.price_data_api, name='price_data_api'),
 ]

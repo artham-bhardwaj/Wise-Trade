@@ -1,24 +1,6 @@
 import yfinance as yf
 import pandas as pd
 import pandas_ta as ta
-<<<<<<< HEAD
-from django.http import HttpResponse
-
-def fetch(request):
-    # Fetch stock data
-    data = yf.download("AAPL", period="3mo", interval="1d")
-
-    # Flatten MultiIndex if it exists
-    if isinstance(data.columns, pd.MultiIndex):
-        data.columns = ['_'.join(col).strip() for col in data.columns.values]
-
-    # Apply all technical indicators
-    data.ta.strategy("all")
-
-    print(data.head())  # Debugging
-
-    return HttpResponse("Fetched data successfully!")
-=======
 from django.http import JsonResponse
 import warnings
 import logging
@@ -133,4 +115,3 @@ def fetch(request):
     response_data['indicators'] = {k: v for k, v in response_data['indicators'].items() if v is not None}
     
     return JsonResponse(response_data)
->>>>>>> 83a97cbb0df2e8e6be15a026c1e5c13abcd467c0

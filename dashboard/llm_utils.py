@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 def extract_stock_symbol(user_input):
     """Extract stock ticker symbol from natural language input using Ollama's gemma:2b model."""
     prompt = f"""
-   Give only tag or symbol for the related company to {user_input} in Captials """
+   what is the ticker for {user_input}"""
     
     try:
         response = ollama.generate(
