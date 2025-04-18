@@ -1,0 +1,243 @@
+:root {
+  --primary: #3a86ff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #17a2b8;
+  --dark: #343a40;
+  --light: #f8f9fa;
+  --bg-dark: #83adec;  /* Light background */
+  --bg-light: #dfe99d;
+  --card-bg: #ffffff;  /* White card background */
+  --text-light: #0b0b0b; /* Dark text */
+  --text-muted: #6c757d; /* Muted text */
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* Header */
+.dashboard-header {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+/* Search Section */
+.search-container {
+  background: linear-gradient(135deg, var(--primary) 0%, #3a86ff 100%);
+  padding: 3rem 0;
+  margin-bottom: 2rem;
+}
+
+.search-container h1 {
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Price Ticker */
+.price-ticker {
+  background-color: var(--bg-light);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.marquee {
+  display: flex;
+  animation: scroll 30s linear infinite;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  margin-right: 2rem;
+  font-weight: 600;
+}
+
+.ticker-price {
+  margin-left: 0.5rem;
+}
+
+.ticker-price.up {
+  color: var(--success);
+}
+
+.ticker-price.down {
+  color: var(--danger);
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Cards */
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.watchlist-card {
+  border-left: 4px solid var(--primary);
+}
+
+.news-card {
+  border-left: 4px solid transparent;
+}
+
+.news-card:hover {
+  border-left-color: var(--primary);
+}
+
+/* Sentiment Badges */
+.sentiment-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.sentiment-badge.positive {
+  background-color: rgba(0, 200, 83, 0.1);
+  color: var(--success);
+}
+
+.sentiment-badge.negative {
+  background-color: rgba(255, 23, 68, 0.1);
+  color: var(--danger);
+}
+
+.sentiment-badge.neutral {
+  background-color: rgba(149, 163, 184, 0.1);
+  color: var(--text-muted);
+}
+
+/* Sentiment Gauge */
+.sentiment-gauge {
+  width: 60px;
+  height: 4px;
+  background-color: rgba(149, 163, 184, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sentiment-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.sentiment-fill.positive {
+  background-color: var(--success);
+}
+
+.sentiment-fill.negative {
+  background-color: var(--danger);
+}
+
+.sentiment-fill.neutral {
+  background-color: var(--text-muted);
+}
+
+/* Metrics */
+.metric-card {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 1.25rem;
+  height: 100%;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Chart */
+.chart-container {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* Alerts */
+.alert {
+  border-radius: 8px;
+  border: none;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-container {
+    padding: 2rem 0;
+  }
+  
+  .chart-container {
+    padding: 1rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
