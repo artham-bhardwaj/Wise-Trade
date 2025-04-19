@@ -1,0 +1,172 @@
+/* Dashboard Dark Theme CSS */
+
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+}
+
+a, a:hover, a:focus {
+    color: #bb86fc;
+    text-decoration: none;
+}
+
+.dashboard-header {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #333;
+}
+
+.navbar-brand, .navbar-brand i {
+    color: #bb86fc;
+}
+
+.navbar .btn-outline-secondary {
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+.navbar .btn-outline-secondary:hover {
+    background-color: #333;
+    border-color: #bb86fc;
+    color: #bb86fc;
+}
+
+.search-container {
+    background-color: #1f1f1f;
+    padding: 2rem 0;
+}
+
+.form-control {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    color: #e0e0e0;
+}
+
+.form-control::placeholder {
+    color: #888;
+}
+
+.btn-light {
+    background-color: #bb86fc;
+    color: #121212;
+    border: none;
+}
+
+.btn-light:hover {
+    background-color: #9a67ea;
+    color: #fff;
+}
+
+.price-ticker {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    padding: 0.5rem 0;
+    color: #e0e0e0;
+}
+
+.ticker-item {
+    font-weight: 600;
+}
+
+.ticker-price.up {
+    color: #4caf50;
+}
+
+.ticker-price.down {
+    color: #cf6679;
+}
+
+.card.watchlist-card {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    color: #e0e0e0;
+}
+
+.metric-value.up {
+    color: #4caf50;
+}
+
+.metric-value.down {
+    color: #cf6679;
+}
+
+.text-muted {
+    color: #888 !important;
+}
+
+.modal-content {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    border: none;
+}
+
+.list-group-item {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    color: #e0e0e0;
+}
+
+.btn-outline-primary {
+    color: #bb86fc;
+    border-color: #bb86fc;
+}
+
+.btn-outline-primary:hover {
+    background-color: #bb86fc;
+    color: #121212;
+}
+
+.alert {
+    border: none;
+}
+
+.alert-danger {
+    background-color: #cf6679;
+    color: #121212;
+}
+
+.alert-success {
+    background-color: #4caf50;
+    color: #121212;
+}
+
+.alert-warning {
+    background-color: #fbc02d;
+    color: #121212;
+}
+
+.metric-card {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    color: #e0e0e0;
+}
+
+.text-success {
+    color: #4caf50 !important;
+}
+
+.text-danger {
+    color: #cf6679 !important;
+}
+
+.btn-outline-secondary {
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+.btn-outline-secondary.active, .btn-outline-secondary:focus, .btn-outline-secondary:hover {
+    background-color: #333;
+    border-color: #bb86fc;
+    color: #bb86fc;
+}
+
+.chart-container {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+h1, h2, h4, h5 {
+    color: #e0e0e0;
+}
