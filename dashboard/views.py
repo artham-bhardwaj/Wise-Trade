@@ -111,11 +111,12 @@ def dashboard_view(request):
 
 def price_data_api(request):
     symbol = request.GET.get('symbol', '').strip()
+    interval = request.GET.get('interval', '1m').strip()
     if not symbol:
         return JsonResponse({'error': 'Symbol parameter is required'}, status=400)
     try:
-        # Fetch intraday data for live candlestick chart with 1-minute interval
-        stock_data = fetch_stock_data(symbol, interval='1m')
+        # Fetch intraday data for live candlestick chart with requested interval
+        stock_data = fetch_stock_data(symbol, interval=interval)
         # Prepare data for candlestick chart
         data = {
             'dates': stock_data.index.strftime('%Y-%m-%d %H:%M:%S').tolist(),
