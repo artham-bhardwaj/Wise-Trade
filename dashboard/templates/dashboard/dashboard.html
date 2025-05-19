@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/dashboard_dark.css' %}">
+    <script src="{% static 'dashboard/js/price_chart_debug.js' %}"></script>
 </head>
 <body>
     <!-- Dashboard Header -->
@@ -35,7 +38,7 @@
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>
                         </div>
                     </div>
@@ -48,16 +51,16 @@
     <section class="search-container">
         <div class="container">
             <h1 class="text-white mb-4">Market Intelligence Dashboard</h1>
-            <form method="GET" action="{% url 'dashboard_view' %}" class="row g-3">
+            <form method="GET" action="{% url 'dashboard' %}" class="row g-3">
                 {% csrf_token %}
                 <div class="col-md-10">
-<input 
-    type="text" 
-    name="stock_name" 
-    value="{{ stock_name|default:'TSLA' }}" 
-    placeholder="Search for stocks, news or analysis..." 
-    class="form-control form-control-lg"
->
+                    <input 
+                        type="text" 
+                        name="stock_name" 
+                        value="{{ stock_name|default:'TSLA' }}" 
+                        placeholder="Search for stocks, news or analysis..." 
+                        class="form-control form-control-lg"
+                    >
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-light btn-lg w-100">
@@ -190,9 +193,11 @@
                     <button type="button" class="btn btn-outline-secondary">1Y</button>
                 </div>
             </div>
+
             <div class="chart-container">
-                <div id="priceChart" style="height: 500px;"></div>
+                <div id="priceChart" data-symbol="{{ query }}" style="height: 500px;"></div>
             </div>
+
         </section>
 
     <!-- Recommendation Section -->
@@ -244,6 +249,15 @@
         </div>
     </section>
 
+
+
+    <!-- Stock symbol input form -->
+    <form method="GET" action="{% url 'dashboard' %}" class="mb-4">
+        <input type="text" name="stock_name" placeholder="Enter stock symbol (e.g., TSLA)" class="form-control" value="{{ query }}">
+        <button type="submit" class="btn btn-primary mt-2">Analyze</button>
+    </form>
+
+    
     <!-- Technical Analysis Section -->
     {% if technical_data %}
     <section>
@@ -281,9 +295,12 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+
         // Price chart initialization
-        if (document.getElementById('priceChart')) {
-            fetch(`/api/price_data?symbol=${encodeURIComponent('{{ query }}')}`)
+        function loadPriceChart() {
+            const symbol = "{{ query|escapejs }}";
+            fetch('/api/price_data?symbol=' + encodeURIComponent(symbol))
+
                 .then(response => response.json())
                 .then(data => {
                     const candlestickData = [{
@@ -293,12 +310,13 @@
                         high: data.high,
                         low: data.low,
                         close: data.close,
+
                         increasing: {line: {color: 'green'}},
                         decreasing: {line: {color: 'red'}}
                     }];
 
-                    const layout = {
-                        title: '{{ query }} Price Chart',
+                    const lightlayout= {
+                        title: symbol + ' Price Chart',
                         xaxis: { 
                             title: 'Date',
                             rangeslider: { visible: false }
@@ -307,7 +325,28 @@
                         margin: {l: 50, r: 50, b: 50, t: 50, pad: 4},
                         showlegend: false,
                         plot_bgcolor: 'rgba(0,0,0,0)',
-                        paper_bgcolor: 'rgba(0,0,0,0)'
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        increasing: {line: {color: '#4caf50'}},
+                        decreasing: {line: {color: '#cf6679'}},
+                    };
+
+                    const darklayout = {
+                        title: symbol + ' Price Chart',
+                        xaxis: { 
+                            title: 'Date',
+                            rangeslider: { visible: false },
+                            color: '#e0e0e0'
+                        },
+                        yaxis: { 
+                            title: 'Price',
+                            color: '#e0e0e0'
+                        },
+                        margin: {l: 50, r: 50, b: 50, t: 50, pad: 4},
+                        showlegend: false,
+                        plot_bgcolor: '#121212',
+                        paper_bgcolor: '#121212',
+                        font: {color: '#e0e0e0'}
+
                     };
 
                     const config = {
@@ -315,10 +354,16 @@
                         displayModeBar: true
                     };
 
-                    Plotly.newPlot('priceChart', candlestickData, layout, config);
+                    Plotly.newPlot('priceChart', candlestickData, darklayout, config);
                 })
                 .catch(error => console.error('Error loading chart data:', error));
         }
+
+
+        loadPriceChart();
+        setInterval(loadPriceChart, 300000); // Refresh every 5 minutes
+
+
 
         // Initialize sentiment bars
         document.querySelectorAll('.sentiment-fill').forEach(bar => {
@@ -349,3 +394,5 @@
     </script>
 </body>
 </html>
+</content>
+</edit_file>

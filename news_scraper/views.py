@@ -1,5 +1,4 @@
 from django.shortcuts import render
-<<<<<<< HEAD
 from .news_fetcher import fetch_news
 
 def newsscraper(request):
@@ -18,7 +17,7 @@ def newsscraper(request):
                 [f"{article['title']} (Source: {article['source']}) --> {article['content']}" 
                  for article in news_data]
             )
-=======
+
 import requests
 
 def newsscraper(request):
@@ -60,6 +59,6 @@ def newsscraper(request):
 #         "url": "https://www.theverge.com/...",
 #         "publishedAt": "2025-03-01T11:30:00Z"
 #     }
->>>>>>> 83a97cbb0df2e8e6be15a026c1e5c13abcd467c0
+
 
     return render(request, "scraper.html", {"news": news_summary})

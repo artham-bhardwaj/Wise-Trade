@@ -1,0 +1,75 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        Technical Analysis for {{ symbol|upper }}
+    </h2>
+
+    {% if data %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Close Price -->
+        <div class="col">
+            <div class="card p-3">
+                <h5>Close Price</h5>
+                <p>{{ data.close_price }}</p>
+            </div>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="col">
+            <div class="card p-3">
+                <h5>Recommendation</h5>
+                <p>{{ data.recommendation }} (Confidence: {{ data.confidence }}%)</p>
+            </div>
+        </div>
+
+        <!-- RSI -->
+        {% if data.indicators.RSI %}
+        <div class="col">
+            <div class="card p-3">
+                <h5>RSI</h5>
+                <p>{{ data.indicators.RSI|floatformat:2 }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- SMA -->
+        {% if data.indicators.SMA_50 %}
+        <div class="col">
+            <div class="card p-3">
+                <h5>SMA 50</h5>
+                <p>{{ data.indicators.SMA_50|floatformat:2 }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- MACD -->
+        {% if data.indicators.MACD %}
+        <div class="col">
+            <div class="card p-3">
+                <h5>MACD</h5>
+                <ul class="list-unstyled">
+                    {% for key, value in data.indicators.MACD.items %}
+                    <li>{{ key }}: {{ value|floatformat:2 }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Bollinger Bands -->
+        {% if data.indicators.Bollinger_%B %}
+        <div class="col">
+            <div class="card p-3">
+                <h5>Bollinger %B</h5>
+                <p>{{ data.indicators.Bollinger_%B|floatformat:2 }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+    <p class="text-muted">No data available. Please provide a valid stock symbol.</p>
+    {% endif %}
+</div>
+{% endblock %}
