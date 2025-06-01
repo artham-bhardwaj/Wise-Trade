@@ -10,3 +10,4 @@ yfinance
 scikit-learn
 transformers
 torch
+psycopg2-binary
