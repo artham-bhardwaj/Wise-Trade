@@ -96,3 +96,32 @@ def apply_indicators(stock_data):
     ]
 
     return indicators
+
+def predict_price_movement(stock_name):
+    """
+    Predict whether the stock price will go up or down based on recent data and indicators.
+    This is a simple heuristic model using moving averages and RSI.
+    Returns 'up' or 'down'.
+    """
+    try:
+        df = fetch_stock_data(stock_name, interval='1d')
+        if df.empty or len(df) < 50:
+            return "unknown"
+
+        df['SMA_50'] = ta.sma(df['Close'], length=50)
+        df['EMA_20'] = ta.ema(df['Close'], length=20)
+        df['RSI_14'] = ta.rsi(df['Close'], length=14)
+
+        latest = df.iloc[-1]
+
+        # Simple heuristic:
+        # If Close > SMA_50 and Close > EMA_20 and RSI > 50 => price expected to go up
+        # Else price expected to go down
+        if (latest['Close'] > latest['SMA_50'] and
+            latest['Close'] > latest['EMA_20'] and
+            latest['RSI_14'] > 50):
+            return "up"
+        else:
+            return "down"
+    except Exception:
+        return "unknown"

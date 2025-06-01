@@ -7,6 +7,8 @@ import pandas_ta as ta
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.http import HttpRequest
+from sklearn.linear_model import LinearRegression
+import numpy as np
 
 warnings.filterwarnings('ignore', category=FutureWarning)
 logger = logging.getLogger(__name__)
@@ -16,6 +18,7 @@ def fetch(request):
     stock_symbol = request.GET.get('symbol', 'AAPL')  # Default to AAPL if no symbol provided
     try:
         data = yf.download(stock_symbol, period="3mo", interval="1d")
+        logger.debug(f"Fetched data for {stock_symbol}: {data.shape} rows, columns: {list(data.columns)}")
         if data.empty:
             raise ValueError("No data returned for symbol")
 
@@ -74,6 +77,25 @@ def fetch(request):
     elif confidence <= 30:
         recommendation = "Strong Sell" if confidence < 15 else "Sell"
 
+    # Predictive Model: Linear Regression on last 60 days (list of predicted prices)
+    predicted_prices = []
+    try:
+        closing_prices = data['Close'].dropna().values[-60:]  # Last 60 days
+        X = np.arange(len(closing_prices)).reshape(-1, 1)
+        y = closing_prices.reshape(-1, 1)
+
+        model = LinearRegression()
+        model.fit(X, y)
+
+        future_days = 5
+        future_X = np.arange(len(closing_prices), len(closing_prices) + future_days).reshape(-1, 1)
+        future_preds = model.predict(future_X)
+
+        predicted_prices = [round(float(p), 2) for p in future_preds]
+    except Exception as e:
+        logger.warning(f"Price prediction failed: {str(e)}")
+        predicted_prices = []
+
     response_data = {
         'symbol': stock_symbol,
         'close_price': close_price,
@@ -86,16 +108,44 @@ def fetch(request):
             'RSI': rsi,
             'MACD': macd,
             'Bollinger_%B': bb_pct
-        }
+        },
+        'predicted_prices': predicted_prices  # List of predicted prices
     }
 
+    # Remove None values
     response_data = {k: v for k, v in response_data.items() if v is not None}
     response_data['indicators'] = {k: v for k, v in response_data['indicators'].items() if v is not None}
 
     return JsonResponse(response_data)
 
 
-# ✅ NEW VIEW for rendering data dynamically
+# New function to predict price movement: returns (trend, predicted_price)
+def predict_price_movement(stock_symbol):
+    try:
+        data = yf.download(stock_symbol, period="3mo", interval="1d")
+        closing_prices = data['Close'].dropna().values[-60:]
+        X = np.arange(len(closing_prices)).reshape(-1, 1)
+        y = closing_prices.reshape(-1, 1)
+
+        model = LinearRegression()
+        model.fit(X, y)
+
+        future_X = np.array([[len(closing_prices)]])  # predict next day
+        predicted_price = model.predict(future_X)[0][0]
+        print("predicted_price is ", predicted_price)
+        current_price = closing_prices[-1]
+        if predicted_price > current_price * 1.01:
+            return "Up", round(predicted_price, 2)
+        elif predicted_price < current_price * 0.99:
+            return "Down", round(predicted_price, 2)
+        else:
+            return "No change", round(predicted_price, 2)
+    except Exception as e:
+        logger.warning(f"Price prediction failed: {str(e)}")
+        return "Unknown", None
+
+
+# Updated view to render the technical analysis page with predictions
 def technical_analysis_page(request: HttpRequest):
     symbol = request.GET.get('symbol', 'AAPL')
     request.GET = request.GET.copy()
@@ -107,7 +157,13 @@ def technical_analysis_page(request: HttpRequest):
     if response.status_code == 200:
         data = json.loads(response.content)
 
+    # Get price trend and predicted price
+    price_trend, predicted_price = predict_price_movement(symbol)
+
     return render(request, 'dashboard/technical_analysis.html', {
         'data': data,
-        'symbol': symbol
+        'symbol': symbol,
+        'predicted_prices': data.get('predicted_prices', []),
+        'price_trend': price_trend,
+        'predicted_price': predicted_price
     })

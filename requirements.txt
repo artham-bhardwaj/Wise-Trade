@@ -1,0 +1,12 @@
+django
+djangorestframework
+spacy
+vaderSentiment
+requests
+numpy
+pandas
+pandas_ta
+yfinance
+scikit-learn
+transformers
+torch
